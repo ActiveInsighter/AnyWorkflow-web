@@ -1,0 +1,127 @@
+name: Build and deploy web
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Validate, build, and package
+    runs-on: ubuntu-latest
+    outputs:
+      dist_artifact_name: ${{ steps.artifact_metadata.outputs.dist_artifact_name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Create artifact metadata and source archive
+        id: artifact_metadata
+        shell: bash
+        env:
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          branch_slug="$(printf '%s' "$BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | sed -E 's#[^a-z0-9._-]+#-#g; s#^-+##; s#-+$##')"
+          if [ -z "$branch_slug" ]; then
+            branch_slug="unknown-branch"
+          fi
+          branch_slug="${branch_slug:0:180}"
+
+          short_sha="${COMMIT_SHA:0:12}"
+          artifact_name="${branch_slug}-${short_sha}"
+          archive_path="release/${artifact_name}.zip"
+          dist_artifact_name="pages-dist-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+
+          mkdir -p release
+          git archive \
+            --format=zip \
+            --prefix="${artifact_name}/" \
+            --output="$archive_path" \
+            "$COMMIT_SHA"
+
+          echo "artifact_name=$artifact_name" >> "$GITHUB_OUTPUT"
+          echo "archive_path=$archive_path" >> "$GITHUB_OUTPUT"
+          echo "dist_artifact_name=$dist_artifact_name" >> "$GITHUB_OUTPUT"
+          echo "Created $archive_path"
+
+      - name: Upload source code archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact_metadata.outputs.artifact_name }}
+          path: ${{ steps.artifact_metadata.outputs.archive_path }}
+          if-no-files-found: error
+          retention-days: 30
+          overwrite: true
+
+      - name: Upload Pages build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact_metadata.outputs.dist_artifact_name }}
+          path: dist
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    name: Deploy to Tencent EdgeOne Pages
+    needs: build
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Download validated build
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.dist_artifact_name }}
+          path: dist
+
+      - name: Deploy to EdgeOne
+        env:
+          EDGEONE_API_TOKEN: ${{ secrets.EDGEONE_API_TOKEN }}
+          EDGEONE_PROJECT_NAME: ${{ vars.EDGEONE_PROJECT_NAME || 'anyworkflow-web' }}
+        run: |
+          if [ -z "$EDGEONE_API_TOKEN" ]; then
+            echo "::error::Missing EDGEONE_API_TOKEN. Add it as a repository or production environment secret."
+            exit 1
+          fi
+
+          npx --yes edgeone@1.6.28 makers deploy ./dist \
+            --name "$EDGEONE_PROJECT_NAME" \
+            --token "$EDGEONE_API_TOKEN" \
+            --env production
