@@ -7,6 +7,7 @@ import { StudioShell } from "@/components/studio";
 import { Button } from "@/components/ui/button";
 import { queryClient } from "@/lib/query-client";
 import { DashboardPage } from "@/pages/dashboard-page";
+import { DocumentEditorPage } from "@/pages/document-editor-page";
 import { PlaceholderPage } from "@/pages/placeholder-page";
 
 function NotFoundPage() {
@@ -28,7 +29,7 @@ export function App() {
           <Route path="/events" element={<PlaceholderPage eyebrow="Observability" title="事件" description="集中查看触发事件、回调和实时运行日志。" entity="事件" detail="超长事件流会使用 TanStack Virtual，PocketBase Realtime 将负责推送更新。" />} />
           <Route path="/acts" element={<PlaceholderPage eyebrow="Actions" title="Act" description="管理可以被工作流调用的动作与外部服务连接。" entity="Act" />} />
           <Route path="/documents" element={<PlaceholderPage eyebrow="Knowledge" title="富文本文件" description="把运行手册、流程说明和团队知识放在工作流旁边。" entity="文件" />} />
-          <Route path="/documents/:documentId" element={<PlaceholderPage eyebrow="Knowledge" title="文档编辑" description="这里预留 TinyMCE 8 富文本编辑区域。" entity="文件" />} />
+          <Route path="/documents/:documentId" element={<DocumentEditorPage />} />
           <Route path="/settings" element={<PlaceholderPage eyebrow="Workspace" title="设置" description="管理 PocketBase、成员权限和工作台偏好。" entity="设置" />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

@@ -1,0 +1,150 @@
+.anyworkflow-tiny-editor {
+  min-width: 0;
+  color: var(--foreground);
+  font-family: var(--font-family-sans);
+}
+
+.anyworkflow-tiny-editor .tox.tox-tinymce {
+  width: 100%;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-card) !important;
+  background: var(--card) !important;
+  box-shadow: var(--shadow-xs) !important;
+  overflow: hidden;
+}
+
+.anyworkflow-tiny-editor .tox .tox-editor-header,
+.anyworkflow-tiny-editor .tox .tox-menubar,
+.anyworkflow-tiny-editor .tox .tox-toolbar-overlord,
+.anyworkflow-tiny-editor .tox .tox-toolbar,
+.anyworkflow-tiny-editor .tox .tox-toolbar__primary {
+  border-color: var(--border) !important;
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+}
+
+.anyworkflow-tiny-editor .tox .tox-editor-header {
+  padding: var(--primitive-space-1) 0;
+  border-bottom: 1px solid var(--border) !important;
+}
+
+.anyworkflow-tiny-editor .tox .tox-menubar {
+  padding: 0 var(--primitive-space-3);
+}
+
+.anyworkflow-tiny-editor .tox .tox-mbtn,
+.anyworkflow-tiny-editor .tox .tox-tbtn {
+  border-radius: var(--radius-control) !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  color: var(--muted-foreground) !important;
+}
+
+.anyworkflow-tiny-editor .tox .tox-mbtn[disabled],
+.anyworkflow-tiny-editor .tox .tox-tbtn:disabled {
+  background: transparent !important;
+  color: var(--muted-foreground) !important;
+  opacity: 0.5;
+}
+
+.anyworkflow-tiny-editor .tox .tox-mbtn:hover,
+.anyworkflow-tiny-editor .tox .tox-mbtn:focus,
+.anyworkflow-tiny-editor .tox .tox-tbtn:hover,
+.anyworkflow-tiny-editor .tox .tox-tbtn:focus,
+.anyworkflow-tiny-editor .tox .tox-tbtn--enabled {
+  background: var(--surface-hover) !important;
+  color: var(--foreground) !important;
+}
+
+.anyworkflow-tiny-editor .tox .tox-tbtn:focus-visible,
+.anyworkflow-tiny-editor .tox .tox-mbtn:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring) !important;
+}
+
+.anyworkflow-tiny-editor .tox .tox-tbtn svg,
+.anyworkflow-tiny-editor .tox .tox-mbtn svg {
+  fill: currentColor !important;
+}
+
+.anyworkflow-tiny-editor .tox .tox-tbtn--enabled svg {
+  color: var(--primary) !important;
+}
+
+.anyworkflow-tiny-editor .tox .tox-edit-area {
+  background: var(--card) !important;
+}
+
+.anyworkflow-tiny-editor .tox .tox-edit-area iframe {
+  background: var(--background) !important;
+}
+
+.anyworkflow-tiny-editor .tox .tox-edit-area::before {
+  border: 2px solid var(--ring) !important;
+}
+
+.anyworkflow-tiny-editor .tox .tox-statusbar {
+  min-height: var(--control-height-sm);
+  border-top: 1px solid var(--border) !important;
+  background: var(--card) !important;
+  color: var(--muted-foreground) !important;
+}
+
+.anyworkflow-tiny-editor .tox .tox-statusbar a,
+.anyworkflow-tiny-editor .tox .tox-statusbar__path-item,
+.anyworkflow-tiny-editor .tox .tox-statusbar__help-text,
+.anyworkflow-tiny-editor .tox .tox-statusbar__wordcount {
+  color: var(--muted-foreground) !important;
+}
+
+.anyworkflow-tiny-editor .tox .tox-statusbar a:hover,
+.anyworkflow-tiny-editor .tox .tox-statusbar__path-item:hover,
+.anyworkflow-tiny-editor .tox .tox-statusbar__wordcount:hover {
+  color: var(--primary) !important;
+}
+
+.tox.tox-tinymce-aux .tox-menu,
+.tox.tox-tinymce-aux .tox-collection,
+.tox.tox-tinymce-aux .tox-collection--list,
+.tox .tox-dialog,
+.tox .tox-dialog__header,
+.tox .tox-dialog__body,
+.tox .tox-dialog__footer {
+  border-color: var(--border) !important;
+  background: var(--popover) !important;
+  color: var(--popover-foreground) !important;
+}
+
+.tox .tox-collection--list .tox-collection__item--enabled:not(.tox-collection__item--state-disabled) {
+  background: var(--popover) !important;
+  color: var(--popover-foreground) !important;
+}
+
+.tox .tox-collection--list .tox-collection__item:hover:not(.tox-collection__item--state-disabled) {
+  background: var(--surface-hover) !important;
+  color: var(--foreground) !important;
+}
+
+.tox .tox-collection--list .tox-collection__item--active:not(.tox-collection__item--state-disabled) {
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.tox .tox-textfield,
+.tox .tox-listboxfield .tox-listbox--select,
+.tox .tox-selectfield select,
+.tox .tox-textarea {
+  border-color: var(--input) !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+@media (max-width: 640px) {
+  .anyworkflow-tiny-editor .tox .tox-menubar {
+    display: none;
+  }
+
+  .anyworkflow-tiny-editor .tox .tox-toolbar__group {
+    padding: 0 var(--primitive-space-1);
+  }
+}
