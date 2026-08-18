@@ -2,8 +2,8 @@ import { useState } from "react";
 import { FileText, Save } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { TinyEditor } from "@/components/editor/tiny-editor";
 import { PageFrame } from "@/components/page-frame";
+import { TinyEditor } from "@/features/documents/components/tiny-editor/tiny-editor";
 
 const DEFAULT_DOCUMENT = `
   <h2>开始记录这个工作流</h2>
@@ -26,25 +26,26 @@ export function DocumentEditorPage() {
       title="文档编辑器"
       description="使用 TinyMCE 8 编写运行手册、流程说明和团队协作记录。"
       actions={
-        <Button onClick={saveDraft}>
+        <Button onClick={saveDraft} disabled={!isDirty}>
           <Save data-icon="inline-start" />
           保存草稿
         </Button>
       }
     >
-      <section aria-label="文档编辑器" className="overflow-hidden border border-border bg-card">
-        <div className="flex flex-wrap items-center gap-3 border-b border-border px-4 py-3">
-          <FileText className="size-4 text-primary" />
+      <section aria-label="文档编辑器" className="mx-auto w-full max-w-4xl">
+        <div className="mb-3 flex min-h-control-sm flex-wrap items-center gap-2 border-b border-border pb-3">
+          <FileText className="size-icon-sm text-muted-foreground" />
           <span className="text-sm font-medium text-foreground">Untitled workflow brief</span>
-          <span className="ml-auto text-xs text-muted-foreground">
+          <span className="ml-auto text-xs text-muted-foreground" aria-live="polite">
             {isDirty ? "有未保存修改" : "草稿已保存"}
           </span>
         </div>
-        <div className="min-h-[360px] p-4 sm:p-6 lg:p-8">
-          <div className="mx-auto max-w-4xl">
-            <TinyEditor value={draft} onChange={setDraft} />
-          </div>
-        </div>
+
+        <TinyEditor value={draft} onChange={setDraft} onSaveShortcut={saveDraft} />
+
+        <p className="mt-2 text-xs text-muted-foreground">
+          支持 Ctrl/⌘ + S 保存；后续接入 PocketBase 后可将这里的草稿状态替换为真实持久化状态。
+        </p>
       </section>
     </PageFrame>
   );
